@@ -21,7 +21,24 @@ spec:
             - name: env-file
               mountPath: /var/www/html/.env
               subPath: .env
-
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: laravel
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+                  
         - name: nginx
           image: nginx:stable-alpine
           ports:
