@@ -18,8 +18,6 @@ spec:
           ports:
             - containerPort: 9000
           volumeMounts:
-            - name: app-code
-              mountPath: /var/www/html
             - name: env-file
               mountPath: /var/www/html/.env
               subPath: .env
@@ -29,16 +27,12 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: app-code
-              mountPath: /var/www/html
             - name: nginx-config
               mountPath: /etc/nginx/conf.d
           command: ["/bin/sh"]
           args: ["-c", "nginx -g 'daemon off;'"]
 
       volumes:
-        - name: app-code
-          emptyDir: {}
         - name: nginx-config
           configMap:
             name: laravel-nginx-config
