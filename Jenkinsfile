@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "your-dockerhub-username/laravel-app"
+        IMAGE = "sachinxfdo/laravel-app"
         K8S_YAML = "k8s/deployment.yaml"
     }
 
