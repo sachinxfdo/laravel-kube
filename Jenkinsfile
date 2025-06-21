@@ -23,11 +23,11 @@ pipeline {
         stage('Push Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker push $IMAGE:$BUILD_NUMBER
-                        docker push $IMAGE:latest
-                    """
+                    sh '''#!/bin/bash
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push "$IMAGE:$BUILD_NUMBER"
+                    docker push "$IMAGE:latest"
+                    '''
                 }
             }
         }
@@ -35,9 +35,9 @@ pipeline {
         stage('Deploy to K8s') {
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh """
-                        sed 's|IMAGE_PLACEHOLDER|$IMAGE:$BUILD_NUMBER|g' $K8S_YAML | kubectl apply -f -
-                    """
+                    sh '''#!/bin/bash
+                    sed "s|IMAGE_PLACEHOLDER|$IMAGE:$BUILD_NUMBER|g" $K8S_YAML | kubectl apply -f -
+                    '''
                 }
             }
         }
