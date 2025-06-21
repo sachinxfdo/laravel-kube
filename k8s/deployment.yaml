@@ -13,36 +13,35 @@ spec:
         app: laravel
     spec:
       containers:
-        - name: laravel
-          image: IMAGE_PLACEHOLDER
+        - name: php-fpm
+          image: sachinxfdo/laravel-app:latest
           ports:
-            - containerPort: 80  
-          env:
-            - name: APP_ENV
-              value: production
-            - name: APP_DEBUG
-              value: "false"
-            - name: APP_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: laravel-secret
-                  key: APP_KEY
-            - name: DB_HOST
-              value: mysql-service
-            - name: DB_PORT
-              value: "3306"
-            - name: DB_DATABASE
-              value: laravel
-            - name: DB_USERNAME
-              value: root
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: laravel-secret
-                  key: DB_PASSWORD
+            - containerPort: 9000
           volumeMounts:
-            - name: storage
-              mountPath: /var/www/html/storage
+            - name: app-code
+              mountPath: /var/www/html
+            - name: env-file
+              mountPath: /var/www/html/.env
+              subPath: .env
+
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: app-code
+              mountPath: /var/www/html
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          command: ["/bin/sh"]
+          args: ["-c", "nginx -g 'daemon off;'"]
+
       volumes:
-        - name: storage
+        - name: app-code
           emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: laravel-nginx-config
+        - name: env-file
+          secret:
+            secretName: laravel-env
