@@ -10,3 +10,9 @@ Route::get('/', function () {
 Route::get('/test', function () {
     return Category::all();
 });
+
+Route::get('/create', function () {
+    return Category::create([
+        'name'=> 'Sahan',
+    ]);
+});
