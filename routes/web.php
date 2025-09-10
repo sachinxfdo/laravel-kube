@@ -11,6 +11,10 @@ Route::get('/test', function () {
     return Category::all();
 });
 
+Route::get('/hello', function () {
+    return Category::all();
+});
+
 Route::get('/create', function () {
     return Category::create([
         'name'=> 'Sahan',
